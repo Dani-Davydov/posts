@@ -1,4 +1,4 @@
-export  const EditPost = () => {
+export  const EditPostPage = () => {
     return (
         <div>
             для редактирования постов

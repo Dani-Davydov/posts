@@ -1,4 +1,4 @@
-export  const DetailPost = () => {
+export  const DetailPostPage = () => {
     return (
         <div>
             детальная стр постов

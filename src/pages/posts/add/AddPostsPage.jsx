@@ -1,4 +1,4 @@
-export  const AddPosts = () => {
+export  const AddPostsPage = () => {
     return (
         <div>
             добавление
