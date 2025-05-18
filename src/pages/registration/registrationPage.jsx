@@ -1,4 +1,4 @@
-export  const Registration = () => {
+export  const RegistrationPage = () => {
     return (
         <div>
             регистрация

@@ -7,13 +7,13 @@ import {
 } from "react-router-dom";
 import './index.css'
 import App from './App.jsx'
-import {Posts} from "./pages/posts/posts.jsx";
-import {DetailPost} from "./pages/posts/detail/posts.jsx";
+import {PostsPage} from "./pages/posts/PostsPage.jsx";
+import {DetailPostPage} from "./pages/posts/detail/DetailsPage.jsx";
 import {Root} from "./components/Root/Root.jsx";
-import {EditPost} from "./pages/posts/edit/posts.jsx";
-import {AddPosts} from "./pages/posts/add/posts.jsx";
-import {Auth} from "./pages/auth/auth.jsx";
-import {Registration} from "./pages/registration/registration.jsx";
+import {EditPostPage} from "./pages/posts/edit/EditPostPage.jsx";
+import {AddPostsPage} from "./pages/posts/add/AddPostsPage.jsx";
+import {AuthPage} from "./pages/auth/AuthPage.jsx";
+import {RegistrationPage} from "./pages/registration/registrationPage.jsx";
 import { store } from "./redux/store.js";
 
 const router = createBrowserRouter([
@@ -27,27 +27,27 @@ const router = createBrowserRouter([
             },
             {
                 path: "posts",
-                element: <Posts/>,
+                element: <PostsPage/>,
             },
             {
                 path: "posts/:id",
-                element: <DetailPost/>
+                element: <DetailPostPage/>
             },
             {
                 path: "posts/:id/edit",
-                element: <EditPost/>
+                element: <EditPostPage/>
             },
             {
                 path: "posts/add",
-                element: <AddPosts/>
+                element: <AddPostsPage/>
             },
             {
                 path: "auth",
-                element: <Auth/>
+                element: <AuthPage/>
             },
             {
                 path: "registration",
-                element: <Registration/>
+                element: <RegistrationPage/>
             }
         ]
     },

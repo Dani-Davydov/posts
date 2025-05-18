@@ -1,4 +1,4 @@
-export  const Auth = () => {
+export  const AuthPage = () => {
     return (
         <div>
             авторизация
