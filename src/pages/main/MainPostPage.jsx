@@ -1,31 +1,36 @@
 import { Posts } from "../../components/Posts/Posts.jsx";
 import { Container } from "../../components/Container/index.jsx";
 import {Typo} from "../../components/Typo/Typo.jsx";
-
-const initialPosts = [
-    {
-        id: 1,
-        title: 'asdasdasd',
-        image: 'https://img.freepik.com/free-photo/beautiful-endangered-red-panda-green-tree_475641-1326.jpg?semt=ais_hybrid&w=740'
-    },
-    {
-        id: 2,
-        title: 'hahahhahahha',
-        image: 'https://img.freepik.com/free-photo/beautiful-endangered-red-panda-green-tree_475641-1326.jpg?semt=ais_hybrid&w=740'
-    },
-    {
-        id: 3,
-        title: 'klgfdckgfck.gck.gfck.gc',
-        image: 'https://img.freepik.com/free-photo/beautiful-endangered-red-panda-green-tree_475641-1326.jpg?semt=ais_hybrid&w=740'
-    }
-]
+import {useDispatch, useSelector} from "react-redux";
+import {useEffect} from "react";
+import {getFreshPosts} from "../../redux/slices/postsSlice.js";
 
 export const MainPostPage = () => {
+    const dispatch = useDispatch();
+
+    const postForView = useSelector((state) => state.posts.postForView);
+    const freshPosts = useSelector((state) => state.posts.freshPosts);
+
+    useEffect(() => {
+        dispatch(getFreshPosts());
+    }, [])
+
     return (
         <>
             <Container>
-                <Typo>Свежие публикации</Typo>
-                <Posts posts={initialPosts} />
+                {freshPosts &&
+                <>
+                    <Typo>Свежие публикации</Typo>
+                    <Posts posts={freshPosts} />
+                </>
+                }
+                { postForView &&
+                    <>
+                        <Typo>Последние просмотренный пост</Typo>
+                        <Posts posts={[postForView]} />
+                    </>
+                }
+
             </Container>
         </>
     )
