@@ -1,15 +1,21 @@
-import { useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {Link} from "../../../components/Link/Link.jsx";
-import { initialPosts } from "../PostsPage.jsx";
-import {useMemo} from "react";
+import {useEffect} from "react";
 import {Typo} from "../../../components/Typo/Typo.jsx";
 import {Container} from "../../../components/Container/index.jsx";
 import * as SC from "./styles.js"
 import {LinkWrapper} from "./styles.js";
+import {useDispatch, useSelector} from "react-redux";
+import {getPosts} from "../../../redux/slices/postsSlice.js";
 
 export  const DetailPostPage = () => {
     const { id } = useParams();
-    const currentPost = useMemo(() => initialPosts.find((post) => post.id === Number(id)), [id])
+    const currentPost = useSelector((state) => state.posts.postForView);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getPosts(Number(id)))
+    }, [id])
 
     if (!currentPost) {
         return <>Пост не найден</>;
