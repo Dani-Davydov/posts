@@ -5,11 +5,15 @@ import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {getFreshPosts} from "../../redux/slices/postsSlice.js";
 
+
 export const MainPostPage = () => {
     const dispatch = useDispatch();
 
     const postForView = useSelector((state) => state.posts.postForView);
     const freshPosts = useSelector((state) => state.posts.freshPosts);
+
+    const { posts, loading } = freshPosts;
+    const { post } = postForView
 
     useEffect(() => {
         dispatch(getFreshPosts());
@@ -18,16 +22,17 @@ export const MainPostPage = () => {
     return (
         <>
             <Container>
-                {freshPosts &&
+                {loading && <>Loading...</>}
+                {posts &&
                 <>
                     <Typo>Свежие публикации</Typo>
-                    <Posts posts={freshPosts} />
+                    <Posts posts={posts} />
                 </>
                 }
-                { postForView &&
+                { post &&
                     <>
                         <Typo>Последние просмотренный пост</Typo>
-                        <Posts posts={[postForView]} />
+                        <Posts posts={[post]} />
                     </>
                 }
 
