@@ -1,65 +1,99 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import {postAPI} from "../../api/postsAPI.js";
 
 const initialState = {
-    list: [
-        {
-            id: 5,
-            title: 'post 5',
-            image: 'https://img.freepik.com/free-photo/beautiful-endangered-red-panda-green-tree_475641-1326.jpg?semt=ais_hybrid&w=740',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. A culpa distinctio earum facere ipsum nobis quaerat quis ratione, voluptas voluptate!'
-        },
-        {
-            id: 4,
-            title: 'post 4',
-            image: 'https://img.freepik.com/free-photo/beautiful-endangered-red-panda-green-tree_475641-1326.jpg?semt=ais_hybrid&w=740',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. A culpa distinctio earum facere ipsum nobis quaerat quis ratione, voluptas voluptate!'
-        },
-        {
-            id: 3,
-            title: 'post 3',
-            image: 'https://img.freepik.com/free-photo/beautiful-endangered-red-panda-green-tree_475641-1326.jpg?semt=ais_hybrid&w=740',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. A culpa distinctio earum facere ipsum nobis quaerat quis ratione, voluptas voluptate!'
-        },
-        {
-            id: 2,
-            title: 'post 2',
-            image: 'https://img.freepik.com/free-photo/beautiful-endangered-red-panda-green-tree_475641-1326.jpg?semt=ais_hybrid&w=740',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. A culpa distinctio earum facere ipsum nobis quaerat quis ratione, voluptas voluptate!'
-        },
-        {
-            id: 1,
-            title: 'post 1',
-            image: 'https://img.freepik.com/free-photo/beautiful-endangered-red-panda-green-tree_475641-1326.jpg?semt=ais_hybrid&w=740',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. A culpa distinctio earum facere ipsum nobis quaerat quis ratione, voluptas voluptate!'
-        },
-    ],
-    postForView: null,
-    freshPosts: null,
+    posts: {
+        list: null,
+        loading: false,
+    },
+    postForView: {
+        post: null,
+        loading: false,
+    },
+    freshPosts: {
+        posts: null,
+        loading: false,
+    },
 }
+
+export const getPostbyId = createAsyncThunk(
+    'posts/fetchById',
+    async (postId) => {
+        return await postAPI.fetchById(postId)
+    },
+)
+
+export const getFreshPosts = createAsyncThunk(
+    'posts/fetchFreshPosts',
+    async (limit) => {
+        return await postAPI.fetchFreshPosts(limit)
+    }
+)
+
+export const getPosts = createAsyncThunk(
+    'posts/fetchPosts',
+    async () => {
+        return await postAPI.fetchPosts()
+    }
+)
 
 export const postsSlice = createSlice({
     name: 'posts',
     initialState,
     reducers: {
-        setPosts: (state, action) => {
-            state.list = action.payload
-        },
         editPost: (state, action) => {
             // edit
-        },
-        getPosts: (state, action) => {
-            state.postForView = state.list.find(post => post.id === action.payload)
-        },
-        getFreshPosts: (state, action) => {
-            state.freshPosts = state.list.slice(0, 3)
         },
         addPost: (state, action) => {
             // adding new post
         },
     },
+    extraReducers: (builder) => {
+        builder.addCase(getPostbyId.pending, (state) => {
+            state.postForView = {
+                post: null,
+                loading: true,
+            }
+        })
+        builder.addCase(getPostbyId.fulfilled, (state, action) => {
+            state.postForView = {
+                post: action.payload,
+                loading: false,
+            }
+        })
+
+        builder.addCase(getPosts.pending, (state) => {
+            state.posts = {
+                list: null,
+                loading: true,
+            }
+        })
+        builder.addCase(getPosts.fulfilled, (state, action) => {
+            console.log(action.payload)
+            state.posts = {
+                list: action.payload,
+                loading: false,
+            }
+        })
+
+        builder.addCase(getFreshPosts.pending, (state) => {
+            state.freshPosts = {
+                posts: null,
+                loading: true,
+            }
+        })
+        builder.addCase(getFreshPosts.fulfilled, (state, action) => {
+            console.log(action.payload)
+            state.freshPosts = {
+                posts: action.payload,
+                loading: false,
+            }
+        })
+
+    },
 })
 
 // Action creators are generated for each case reducer function
-export const { setPosts, addPost, editPost, getPosts, getFreshPosts } = postsSlice.actions
+export const { addPost, editPost } = postsSlice.actions
 
 export default postsSlice.reducer

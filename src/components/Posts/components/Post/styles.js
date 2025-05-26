@@ -4,7 +4,12 @@ export const Post = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    flex: 1 1;
+    min-width: 300px;
     gap: 15px;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
 `
 
 export const Image = styled.img`
