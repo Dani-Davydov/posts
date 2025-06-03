@@ -29,7 +29,7 @@ export  const DetailPostPage = () => {
         return <Container>Loading...</Container>
     }
 
-    if (!postForView.post || !postForView.post.hasOwnProperty('id')) {
+    if (!postForView.post || !Object.prototype.hasOwnProperty.call(postForView.post, 'id')) {
         return(
             <>
                 <>Пост не найден</>
@@ -53,6 +53,9 @@ export  const DetailPostPage = () => {
             <div style={{ clear: 'both' }}></div>
             <LinkWrapper>
                 <Link to={'/posts'}>Обратно на страницу постов</Link>
+                <br/>
+                <br/>
+                <Link to={`/posts/${id}/edit`}>Редактировать пост</Link>
             </LinkWrapper>
         </Container>
     )
