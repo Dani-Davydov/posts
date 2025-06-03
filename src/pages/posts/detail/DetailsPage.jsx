@@ -6,16 +6,24 @@ import {Container} from "../../../components/Container/index.jsx";
 import * as SC from "./styles.js"
 import {LinkWrapper} from "./styles.js";
 import {useDispatch, useSelector} from "react-redux";
-import {getPostbyId} from "../../../redux/slices/postsSlice.js";
+import {getPostbyId, showPost} from "../../../redux/slices/postsSlice.js";
 
 export  const DetailPostPage = () => {
     const { id } = useParams();
+    const { list } = useSelector((state) => state.posts.posts);
     const postForView = useSelector((state) => state.posts.postForView);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getPostbyId(Number(id)))
-    }, [id])
+        const intId = Number(id);
+        const findetPost = list ? list.find((item) => item.id === intId) : undefined;
+
+        if (findetPost) {
+            dispatch(showPost(findetPost))
+        } else {
+            dispatch(getPostbyId(intId))
+        }
+    }, [id, dispatch, list]);
 
     if (postForView.loading) {
         return <Container>Loading...</Container>
