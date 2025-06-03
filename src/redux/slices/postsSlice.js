@@ -45,8 +45,17 @@ export const postsSlice = createSlice({
             // edit
         },
         addPost: (state, action) => {
-            // adding new post
+            const newPost = {...action.payload}
+
+            newPost.id = new Date().getTime()
+            state.posts.list = state.posts.list ? [newPost, ...state.posts.list] : [newPost]
         },
+        showPost: (state, action) => {
+            state.postForView = {
+                post: action.payload,
+                loading: false,
+            }
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(getPostbyId.pending, (state) => {
@@ -69,7 +78,6 @@ export const postsSlice = createSlice({
             }
         })
         builder.addCase(getPosts.fulfilled, (state, action) => {
-            console.log(action.payload)
             state.posts = {
                 list: action.payload,
                 loading: false,
@@ -83,7 +91,6 @@ export const postsSlice = createSlice({
             }
         })
         builder.addCase(getFreshPosts.fulfilled, (state, action) => {
-            console.log(action.payload)
             state.freshPosts = {
                 posts: action.payload,
                 loading: false,
@@ -94,6 +101,6 @@ export const postsSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { addPost, editPost } = postsSlice.actions
+export const { addPost, editPost, showPost } = postsSlice.actions
 
 export default postsSlice.reducer
