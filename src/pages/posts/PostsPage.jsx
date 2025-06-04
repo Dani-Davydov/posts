@@ -19,6 +19,10 @@ export  const PostsPage = () => {
         return <Container>Loading...</Container>
     }
 
+    if (Array.isArray(list) && !list.length) {
+        return <Container>Постов нет</Container>
+    }
+
     if (!list) {
         return <>404</>
     }

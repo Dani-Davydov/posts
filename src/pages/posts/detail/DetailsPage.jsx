@@ -1,18 +1,30 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {Link} from "../../../components/Link/Link.jsx";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {Typo} from "../../../components/Typo/Typo.jsx";
 import {Container} from "../../../components/Container/index.jsx";
 import * as SC from "./styles.js"
-import {LinkWrapper} from "./styles.js";
+import { LinkWrapper } from "./styles.js";
 import {useDispatch, useSelector} from "react-redux";
-import {getPostbyId, showPost} from "../../../redux/slices/postsSlice.js";
+import {getPostbyId, showPost, deletePost} from "../../../redux/slices/postsSlice.js";
 
 export  const DetailPostPage = () => {
     const { id } = useParams();
+
+    const navigate = useNavigate();
+
     const { list } = useSelector((state) => state.posts.posts);
     const postForView = useSelector((state) => state.posts.postForView);
+
     const dispatch = useDispatch();
+
+    const [postForDelete, setPostForDelete] = useState(null);
+
+    const onDeletePost = (id) => {
+        dispatch(deletePost(id))
+        setPostForDelete(null);
+        return  navigate(`/posts`);
+    }
 
     useEffect(() => {
         const intId = Number(id);
@@ -46,16 +58,25 @@ export  const DetailPostPage = () => {
 
     return (
         <Container>
+            {postForDelete &&
+                <SC.ModalWrapper>
+                    <SC.Modal>
+                        <SC.ModalText>Вы точно уверены, что хотите удалить пост с ID - {postForDelete.id} ?</SC.ModalText>
+                        <SC.ModalContent>
+                            <SC.DeleteButton onClick={() => onDeletePost(postForDelete.id)}>Да</SC.DeleteButton>
+                            <SC.CancellBtn onClick={() => setPostForDelete(null)}>Нет</SC.CancellBtn>
+                        </SC.ModalContent>
+                    </SC.Modal>
+                </SC.ModalWrapper>
+            }
             <Typo>{post.title}</Typo>
-            <br/>
             <SC.Image src={image} alt={post.title}></SC.Image>
             <SC.Text>{post.body}</SC.Text>
             <div style={{ clear: 'both' }}></div>
             <LinkWrapper>
                 <Link to={'/posts'}>Обратно на страницу постов</Link>
-                <br/>
-                <br/>
-                <Link to={`/posts/${id}/edit`}>Редактировать пост</Link>
+                {list && <Link to={`/posts/${id}/edit`}>Редактировать пост</Link>}
+                {list && <SC.DeleteButton onClick={() => setPostForDelete(post)}>Удалить пост</SC.DeleteButton>}
             </LinkWrapper>
         </Container>
     )
