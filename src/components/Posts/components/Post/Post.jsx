@@ -1,5 +1,5 @@
 import * as SC from "./styles.js"
-import { Link } from "../../../Link/Link.jsx"
+import { Link } from "../../../UI/Link/Link.jsx"
 
 
 export const Post = ({post}) => {
