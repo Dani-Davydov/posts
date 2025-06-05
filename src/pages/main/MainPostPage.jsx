@@ -1,6 +1,6 @@
 import { Posts } from "../../components/Posts/Posts.jsx";
-import { Container } from "../../components/Container/index.jsx";
-import {Typo} from "../../components/Typo/Typo.jsx";
+import { Container } from "../../components/UI/Container/index.jsx";
+import {Typo} from "../../components/UI/Typo/Typo.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {getFreshPosts} from "../../redux/slices/postsSlice.js";

@@ -1,8 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
-import {Link} from "../../../components/Link/Link.jsx";
+import {Link} from "../../../components/UI/Link/Link.jsx";
 import {useEffect, useState} from "react";
-import {Typo} from "../../../components/Typo/Typo.jsx";
-import {Container} from "../../../components/Container/index.jsx";
+import {Typo} from "../../../components/UI/Typo/Typo.jsx";
+import {Container} from "../../../components/UI/Container/index.jsx";
 import * as SC from "./styles.js"
 import { LinkWrapper } from "./styles.js";
 import {useDispatch, useSelector} from "react-redux";
