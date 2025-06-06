@@ -7,7 +7,7 @@ export const Menu = styled.div`
     align-items: center;
     justify-content: space-between;
     max-width: 600px;
-    margin: 0 auto;
+    margin: 10px auto 0 auto;
 `
 export const MenuItem = styled(NavLink)`
     font-size: 16px;
