@@ -11,7 +11,6 @@ export  const RegistrationPage = () => {
     const navigate = useNavigate();
 
     const onChange = (name, value) => {
-        console.log(name, value);
         setFormValues({...formValues, [name]: value});
     }
 
