@@ -6,6 +6,18 @@ const initialState = {
         list: null,
         loading: false,
     },
+    filtersParametrs: {
+        paginationInfo: {
+            ActivePage: 0,
+            pageCount: 0,
+            perPage: 10
+        },
+        searchValue: "",
+        sort: "",
+    },
+    filteredPosts: {
+        filteredList: null,
+    },
     postForView: {
         post: null,
         loading: false,
@@ -13,6 +25,9 @@ const initialState = {
     freshPosts: {
         posts: null,
         loading: false,
+    },
+    topPosts: {
+        topPosts: null,
     },
 }
 
@@ -23,7 +38,7 @@ export const getPostbyId = createAsyncThunk(
     },
 )
 
-export const getFreshPosts = createAsyncThunk(
+export const getFreshPostsFromBackend = createAsyncThunk(
     'posts/fetchFreshPosts',
     async (limit) => {
         return await postAPI.fetchFreshPosts(limit)
@@ -56,11 +71,72 @@ export const postsSlice = createSlice({
             newPost.id = new Date().getTime()
             state.posts.list = state.posts.list ? [newPost, ...state.posts.list] : [newPost]
         },
+        getTopPosts: (state) => {
+            state.topPosts.topPosts = state.posts.list.slice(0,3)
+        },
         showPost: (state, action) => {
             state.postForView = {
                 post: action.payload,
                 loading: false,
             }
+        },
+        updateFiltersParametrs: (state, action) => {
+            state.filtersParametrs = {
+                ...state.filtersParametrs,
+                ...action.payload
+            };
+        },
+        filterList: (state) => {
+            const paginatedList = (paginationInfo, list) => {
+                const { perPage, ActivePage } = paginationInfo;
+
+                state.filtersParametrs.paginationInfo.pageCount = Math.ceil(list.length / perPage);
+
+                const firstIndex = ActivePage * perPage;
+                const paginatedList = list.slice(firstIndex, firstIndex + perPage);
+
+                return paginatedList;
+            }
+
+            const filterBySearchValue = (list, value) => {
+                return list.filter((post) => {
+                    return post.title.toLocaleLowerCase().includes(value.toLocaleLowerCase())
+                })
+            }
+
+            const sortProducts = (list, sort) => {
+
+                list.sort((a, b) => {
+
+                    if (sort === "ASC") {
+                        if (a.title > b.title) return 1;
+                        if (a.title === b.title) return 0;
+                        if (a.title < b.title) return -1;
+                    }
+
+                    if (a.title > b.title) return -1;
+                    if (a.title === b.title) return 0;
+                    if (a.title < b.title) return 1;
+                })
+            }
+
+            const filterList = (searchValue, sort, paginationInfo) => {
+                let filteredPosts = [...state.posts.list]
+
+                if (searchValue) {
+                    filteredPosts = filterBySearchValue(filteredPosts, searchValue)
+                }
+
+                if (sort) {
+                    sortProducts(filteredPosts, sort)
+                }
+
+                return paginatedList(paginationInfo, filteredPosts);
+            }
+
+            const {searchValue, sort, paginationInfo} = state.filtersParametrs;
+
+            state.filteredPosts.filteredList = filterList(searchValue, sort, paginationInfo );
         },
         deletePost: (state, action) => {
             state.posts.list = state.posts.list.filter((post) => post.id !== action.payload)
@@ -98,13 +174,13 @@ export const postsSlice = createSlice({
             }
         })
 
-        builder.addCase(getFreshPosts.pending, (state) => {
+        builder.addCase(getFreshPostsFromBackend.pending, (state) => {
             state.freshPosts = {
                 posts: null,
                 loading: true,
             }
         })
-        builder.addCase(getFreshPosts.fulfilled, (state, action) => {
+        builder.addCase(getFreshPostsFromBackend.fulfilled, (state, action) => {
             state.freshPosts = {
                 posts: action.payload,
                 loading: false,
@@ -115,6 +191,6 @@ export const postsSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { addPost, editPost, showPost, deletePost } = postsSlice.actions
+export const { addPost, editPost, showPost, deletePost, filterList, updateFiltersParametrs, apdateDeletedId, getTopPosts } = postsSlice.actions
 
 export default postsSlice.reducer

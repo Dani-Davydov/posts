@@ -1,17 +1,22 @@
 import { useParams, useNavigate } from "react-router-dom";
 import {Link} from "../../../components/UI/Link/Link.jsx";
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import {Typo} from "../../../components/UI/Typo/Typo.jsx";
 import {Container} from "../../../components/UI/Container/index.jsx";
 import * as SC from "./styles.js"
 import { LinkWrapper } from "./styles.js";
 import {useDispatch, useSelector} from "react-redux";
-import {getPostbyId, showPost, deletePost} from "../../../redux/slices/postsSlice.js";
+import {getPostbyId, showPost, deletePost, updateFiltersParametrs} from "../../../redux/slices/postsSlice.js";
+import {Modal} from "../../../components/UI/Modal/Modal.jsx";
+import {ModalBtn} from "../../../components/UI/MadalBtn/ModalBtn.jsx";
+import {Loader} from "../../../components/UI/Loader/Loader.jsx";
 
 export  const DetailPostPage = () => {
     const { id } = useParams();
 
     const navigate = useNavigate();
+
+    const deletedPostsRef = useRef([]);
 
     const { list } = useSelector((state) => state.posts.posts);
     const postForView = useSelector((state) => state.posts.postForView);
@@ -23,25 +28,45 @@ export  const DetailPostPage = () => {
 
     const showEditAndDeleteBtn = list && user
 
+    const ResetFilters = () => {
+        dispatch(updateFiltersParametrs({
+            paginationInfo: {
+                ActivePage: 0,
+                pageCount: 0,
+                perPage: 10
+            },
+            searchValue: "",
+            sort: "",
+        }))
+    }
+
     const onDeletePost = (id) => {
+        deletedPostsRef.current.push(id);
         dispatch(deletePost(id))
+        dispatch(showPost(null))
+        ResetFilters()
         setPostForDelete(null);
-        return  navigate(`/posts`);
+        navigate(`/posts`);
     }
 
     useEffect(() => {
         const intId = Number(id);
         const findetPost = list ? list.find((item) => item.id === intId) : undefined;
 
+        if (deletedPostsRef.current.includes(intId)) {
+            return;
+        }
+
         if (findetPost) {
             dispatch(showPost(findetPost))
         } else {
+            console.log('adasdasdasd')
             dispatch(getPostbyId(intId))
         }
     }, [id, dispatch, list]);
 
     if (postForView.loading) {
-        return <Container>Loading...</Container>
+        return <Loader/>
     }
 
     if (!postForView.post || !Object.prototype.hasOwnProperty.call(postForView.post, 'id')) {
@@ -62,24 +87,19 @@ export  const DetailPostPage = () => {
     return (
         <Container>
             {postForDelete &&
-                <SC.ModalWrapper>
-                    <SC.Modal>
-                        <SC.ModalText>Вы точно уверены, что хотите удалить пост с ID - {postForDelete.id} ?</SC.ModalText>
-                        <SC.ModalContent>
-                            <SC.DeleteButton onClick={() => onDeletePost(postForDelete.id)}>Да</SC.DeleteButton>
-                            <SC.CancellBtn onClick={() => setPostForDelete(null)}>Нет</SC.CancellBtn>
-                        </SC.ModalContent>
-                    </SC.Modal>
-                </SC.ModalWrapper>
+                <Modal title={`Вы точно уверены, что хотите удалить пост с ID - ${postForDelete.id} ?`}>
+                    <ModalBtn title={"Да"} color={"#ff2e2e"} onClick={() => onDeletePost(postForDelete.id)}/>
+                    <ModalBtn title={"Нет"} color={"#46a609"} onClick={() => setPostForDelete(null)}/>
+                </Modal>
             }
             <Typo>{post.title}</Typo>
             <SC.Image src={image} alt={post.title}></SC.Image>
             <SC.Text>{post.body}</SC.Text>
             <div style={{ clear: 'both' }}></div>
             <LinkWrapper>
-                <Link to={'/posts'}>Обратно на страницу постов</Link>
+                <Link to={'/posts'} onClick={ResetFilters}>Обратно на страницу постов</Link>
                 {showEditAndDeleteBtn && <Link to={`/posts/${id}/edit`}>Редактировать пост</Link>}
-                {showEditAndDeleteBtn && <SC.DeleteButton onClick={() => setPostForDelete(post)}>Удалить пост</SC.DeleteButton>}
+                {showEditAndDeleteBtn && <ModalBtn title={"Удалить пост"} color={"#ff2e2e"} onClick={() => setPostForDelete(post)}/>}
             </LinkWrapper>
         </Container>
     )

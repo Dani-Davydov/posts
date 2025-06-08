@@ -5,6 +5,7 @@ import {useState} from "react";
 import { Form } from "../../../../components/UI/Form/Form.jsx"
 import {Field} from "../../../../components/UI/Field/Field.jsx";
 import {Input} from "../../../../components/UI/Input/styles.js";
+import {SubmitButton} from "../../../../components/UI/SubmitFormBtn/SubmitFormBtn.jsx";
 
 const DEFAULT_STATE = {title: "", body: ""}
 
@@ -47,7 +48,7 @@ export const PostForm = ({ title, onSubmitForm, defaultValues }) => {
                         onChange={(e) => onChange(e.target.name ,e.target.value)}>
                     </SC.Textarea>
                 </Field>
-                <SC.Button  disabled={disabled} type='submit'>Сохранить</SC.Button>
+                <SubmitButton title={"Сохранить"}  disabled={disabled} type='submit'/>
             </Form>
         </Container>
     )
