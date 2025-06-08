@@ -7,6 +7,7 @@ import {Input} from "../../components/UI/Input/styles.js";
 import { Container } from "../../components/UI/Container/index.jsx";
 import {useDispatch} from "react-redux";
 import {login} from "../../redux/slices/authSlice.js";
+import { SubmitButton } from "../../components/UI/SubmitFormBtn/SubmitFormBtn.jsx"
 
 export  const AuthPage = () => {
     const [formValues, setFormValues] = useState({ name: "", surname: "" , email: "", password: "" });
@@ -68,7 +69,7 @@ export  const AuthPage = () => {
                         onChange={(e) => onChange(e.target.name ,e.target.value)}
                     />
                 </Field>
-                <button  disabled={disabled} type='submit'>Регистрация</button>
+                <SubmitButton title={"Авторизация"} disabled={disabled} type='submit'></SubmitButton>
             </Form>
         </Container>
     )

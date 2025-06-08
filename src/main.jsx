@@ -38,7 +38,7 @@ const router = createBrowserRouter([
                 element: <EditPostPage/>
             },
             {
-                path: "posts/add",
+                path: "add",
                 element: <AddPostsPage/>
             },
             {

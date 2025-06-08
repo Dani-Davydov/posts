@@ -3,7 +3,8 @@ import { Container } from "../../components/UI/Container/index.jsx";
 import {Typo} from "../../components/UI/Typo/Typo.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
-import {getFreshPosts} from "../../redux/slices/postsSlice.js";
+import {getFreshPostsFromBackend, getTopPosts} from "../../redux/slices/postsSlice.js";
+import {Loader} from "../../components/UI/Loader/Loader.jsx";
 
 
 export const MainPostPage = () => {
@@ -11,22 +12,45 @@ export const MainPostPage = () => {
 
     const postForView = useSelector((state) => state.posts.postForView);
     const freshPosts = useSelector((state) => state.posts.freshPosts);
+    const {list} = useSelector((state) => state.posts.posts);
+    const {topPosts} = useSelector((state) => state.posts.topPosts);
 
     const { posts, loading } = freshPosts;
     const { post } = postForView
+    console.log(post);
 
     useEffect(() => {
-        dispatch(getFreshPosts());
-    }, [])
+        if (!posts) {
+            dispatch(getFreshPostsFromBackend());
+        }
+    }, [dispatch, posts]);
+
+    useEffect(() => {
+        if (list) {
+            dispatch(getTopPosts());
+        }
+    }, [list, dispatch]);
+
+    if (!posts && loading) {
+        return <Loader/>
+    }
+
+    if (Array.isArray(posts) && !posts.length) {
+        return <Container>Постов нет</Container>
+    }
+
+    if (!posts) {
+        return <>404</>
+    }
 
     return (
         <>
             <Container>
-                {loading && <>Loading...</>}
+                {loading && <Loader/>}
                 {posts &&
                 <>
                     <Typo>Свежие публикации</Typo>
-                    <Posts posts={posts} />
+                    <Posts posts={topPosts ? topPosts : posts} />
                 </>
                 }
                 { post &&
@@ -35,7 +59,6 @@ export const MainPostPage = () => {
                         <Posts posts={[post]} />
                     </>
                 }
-
             </Container>
         </>
     )

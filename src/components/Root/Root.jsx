@@ -22,7 +22,7 @@ export const Root = () => {
                     <SC.MenuItem to={'/posts'}>Список постов</SC.MenuItem>
                     {!user && <SC.MenuItem to={'/auth'}>Авторизация</SC.MenuItem>}
                     {!user && <SC.MenuItem to={'/registration'}>Регистрация</SC.MenuItem>}
-                    {user && <SC.MenuItem to={'/posts/add'}>Добавление поста</SC.MenuItem>}
+                    {user && <SC.MenuItem to={'/add'}>Добавление поста</SC.MenuItem>}
                     {user && <button onClick={onClickLogout}>Выход из аккаунта</button>}
                 </SC.Menu>
             </Container>

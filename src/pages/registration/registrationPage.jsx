@@ -1,10 +1,11 @@
 import { Typo } from "../../components/UI/Typo/Typo.jsx";
 import { Container } from '../../components/UI/Container/index.jsx'
 import {Field} from "../../components/UI/Field/Field.jsx";
-import {Input} from "../../components/UI/Input/styles.js";
+import {Input} from "../../components/UI/Input/Input.jsx";
 import {useState} from "react";
 import {Form} from "../../components/UI/Form/Form.jsx";
 import {useNavigate} from "react-router-dom";
+import { SubmitButton } from "../../components/UI/SubmitFormBtn/SubmitFormBtn.jsx";
 
 export  const RegistrationPage = () => {
     const [formValues, setFormValues] = useState({ name: "", surname: "" , email: "", password: "" });
@@ -88,7 +89,7 @@ export  const RegistrationPage = () => {
                         onChange={(e) => onChange(e.target.name ,e.target.value)}
                     />
                 </Field>
-                <button  disabled={disabled} type='submit'>Регистрация</button>
+                <SubmitButton title={"Регистрация"} disabled={disabled} type='submit'></SubmitButton>
             </Form>
         </Container>
     )
